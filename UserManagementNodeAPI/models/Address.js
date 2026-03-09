@@ -10,28 +10,40 @@ class Address {
         this.geo = data.geo ? new Geo(data.geo) : null;
     }
 
-    static fromDbRow(row) {
-        if (!row) return null;
+    static fromDoc(doc) {
+        if (!doc) return null;
         const address = new Address({
-            id: row.address_id,
-            street: row.address_street,
-            suite: row.address_suite,
-            city: row.address_city,
-            zipcode: row.address_zipcode
+            id: doc._id ? doc._id.toString() : null,
+            street: doc.street,
+            suite: doc.suite,
+            city: doc.city,
+            zipcode: doc.zipcode
         });
-        if (row.geo_id) {
-            address.geo = Geo.fromDbRow(row);
-        }
+        if (doc.geo) address.geo = Geo.fromEmbedded(doc.geo);
         return address;
     }
 
-    toDbValues() {
-        return {
+    static fromEmbedded(doc) {
+        if (!doc) return null;
+        const address = new Address({
+            street: doc.street,
+            suite: doc.suite,
+            city: doc.city,
+            zipcode: doc.zipcode
+        });
+        if (doc.geo) address.geo = Geo.fromEmbedded(doc.geo);
+        return address;
+    }
+
+    toDoc() {
+        const doc = {
             street: this.street,
             suite: this.suite,
             city: this.city,
             zipcode: this.zipcode
         };
+        if (this.geo) doc.geo = this.geo.toDoc();
+        return doc;
     }
 }
 

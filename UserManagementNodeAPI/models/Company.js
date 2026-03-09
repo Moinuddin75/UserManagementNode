@@ -2,24 +2,33 @@ class Company {
     constructor(data) {
         this.id = data.id || null;
         this.name = data.name || null;
-        this.catchPhrase = data.catchPhrase || null;
+        this.catchPhrase = data.catchPhrase ?? data.catch_phrase ?? null;
         this.bs = data.bs || null;
     }
 
-    static fromDbRow(row) {
-        if (!row) return null;
+    static fromDoc(doc) {
+        if (!doc) return null;
         return new Company({
-            id: row.company_id,
-            name: row.company_name,
-            catchPhrase: row.company_catch_phrase,
-            bs: row.company_bs
+            id: doc._id ? doc._id.toString() : null,
+            name: doc.name,
+            catchPhrase: doc.catchPhrase,
+            bs: doc.bs
         });
     }
 
-    toDbValues() {
+    static fromEmbedded(doc) {
+        if (!doc) return null;
+        return new Company({
+            name: doc.name,
+            catchPhrase: doc.catchPhrase,
+            bs: doc.bs
+        });
+    }
+
+    toDoc() {
         return {
             name: this.name,
-            catch_phrase: this.catchPhrase,
+            catchPhrase: this.catchPhrase,
             bs: this.bs
         };
     }

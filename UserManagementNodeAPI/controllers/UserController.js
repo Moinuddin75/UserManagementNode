@@ -13,7 +13,7 @@ class UserController {
 
     async getUserById(req, res) {
         try {
-            const id = parseInt(req.params.id);
+            const id = req.params.id;
             const user = await userService.getUserById(id);
             if (user) {
                 res.status(200).json(user);
@@ -74,7 +74,7 @@ class UserController {
                 return res.status(400).json({ errors: errors.array() });
             }
 
-            const id = parseInt(req.params.id);
+            const id = req.params.id;
             const user = await userService.updateUser(id, req.body);
             if (user) {
                 res.status(200).json(user);
@@ -92,7 +92,7 @@ class UserController {
 
     async deleteUser(req, res) {
         try {
-            const id = parseInt(req.params.id);
+            const id = req.params.id;
             await userService.deleteUser(id);
             res.status(200).json({ message: 'User deleted successfully' });
         } catch (error) {

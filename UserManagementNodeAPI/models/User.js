@@ -13,33 +13,32 @@ class User {
         this.company = data.company ? new Company(data.company) : null;
     }
 
-    static fromDbRow(row) {
-        if (!row) return null;
+    static fromDoc(doc) {
+        if (!doc) return null;
         const user = new User({
-            id: row.user_id,
-            name: row.user_name,
-            username: row.user_username,
-            email: row.user_email,
-            phone: row.user_phone,
-            website: row.user_website
+            id: doc._id ? doc._id.toString() : null,
+            name: doc.name,
+            username: doc.username,
+            email: doc.email,
+            phone: doc.phone,
+            website: doc.website
         });
-        if (row.address_id) {
-            user.address = Address.fromDbRow(row);
-        }
-        if (row.company_id) {
-            user.company = Company.fromDbRow(row);
-        }
+        if (doc.address) user.address = Address.fromEmbedded(doc.address);
+        if (doc.company) user.company = Company.fromEmbedded(doc.company);
         return user;
     }
 
-    toDbValues() {
-        return {
+    toDoc() {
+        const doc = {
             name: this.name,
             username: this.username,
             email: this.email,
             phone: this.phone,
             website: this.website
         };
+        if (this.address) doc.address = this.address.toDoc();
+        if (this.company) doc.company = this.company.toDoc();
+        return doc;
     }
 }
 

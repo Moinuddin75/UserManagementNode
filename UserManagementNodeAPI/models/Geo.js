@@ -5,16 +5,21 @@ class Geo {
         this.lng = data.lng || null;
     }
 
-    static fromDbRow(row) {
-        if (!row) return null;
+    static fromDoc(doc) {
+        if (!doc) return null;
         return new Geo({
-            id: row.geo_id,
-            lat: row.geo_lat,
-            lng: row.geo_lng
+            id: doc._id ? doc._id.toString() : null,
+            lat: doc.lat,
+            lng: doc.lng
         });
     }
 
-    toDbValues() {
+    static fromEmbedded(doc) {
+        if (!doc) return null;
+        return new Geo({ lat: doc.lat, lng: doc.lng });
+    }
+
+    toDoc() {
         return {
             lat: this.lat,
             lng: this.lng

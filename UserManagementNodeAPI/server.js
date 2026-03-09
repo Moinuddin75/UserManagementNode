@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+const { connect } = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 
 const app = express();
@@ -31,11 +32,19 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: 'Internal server error', error: err.message });
 });
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`User Management API server running on http://localhost:${PORT}`);
-    console.log(`Health check: http://localhost:${PORT}/health`);
-    console.log(`API endpoints: http://localhost:${PORT}/api/users`);
+// Start server after DB connection
+async function start() {
+    await connect();
+    app.listen(PORT, () => {
+        console.log(`User Management API server running on http://localhost:${PORT}`);
+        console.log(`Health check: http://localhost:${PORT}/health`);
+        console.log(`API endpoints: http://localhost:${PORT}/api/users`);
+    });
+}
+
+start().catch(err => {
+    console.error('Failed to start server:', err.message);
+    process.exit(1);
 });
 
 module.exports = app;
