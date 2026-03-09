@@ -66,14 +66,7 @@ Example `.env`:
 ```env
 PORT=8084
 MONGODB_URI=mongodb://localhost:27017
-DB_NAME=usermanagement
-```
-
-For MongoDB Atlas use:
-
-```env
-MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/
-DB_NAME=usermanagement
+DB_NAME=********
 ```
 
 ### 3. Run the application
